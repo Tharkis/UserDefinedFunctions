@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="Function.cs" />
     <Compile Include="SubstitutionCipher.cs" />
     <Compile Include="UserDefinedInvoke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

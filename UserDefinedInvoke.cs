@@ -8,6 +8,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using CorepointHealth.Common.Interfaces.Gear.ItemInvoke;
 using Newtonsoft.Json;
@@ -32,11 +34,17 @@ namespace UserDefinedFunctions
         public void Invoke(ref string sourceOperand, ref string options, ref string destinationOperand, ref string status)
         {
             // Deserialize the JSON and make it an Object
-            Action action = JsonConvert.DeserializeObject<Action>(options);
+            //Action action = JsonConvert.DeserializeObject<Action>(options);
+            Function function = JsonConvert.DeserializeObject <Function>(sourceOperand);
+            //List<Parameter> parameterList = JsonConvert.DeserializeObject<List<Parameter>>(sourceOperand);
 
-            // Perform functions based on the Action Name.
-            string actionParameters = action.Parameters;
-            switch (action.Name)
+            // Perform functions based on the Function Name.
+            //string actionParameters = action.Parameters;
+
+
+
+
+            switch (function.FunctionName)
             {
                 case "Test":
                     // Just a test response
@@ -51,11 +59,13 @@ namespace UserDefinedFunctions
                     return;
                 case "SubstitutionCipher":
                     // Test the old Corepoint SDK functionality.
-                    SubstitutionCipher.SubstituteStrings(sourceOperand, actionParameters, out destinationOperand, out status);
+                    var functionParams = function.Parameters.Where(functionParameter => functionParameter.ParameterName == "Cipher").FirstOrDefault();
+                    string parameterValue = functionParams.ParameterValue;
+                    SubstitutionCipher.SubstituteStrings(function.InputData, parameterValue, out destinationOperand, out status);
                     return;
                 default:
                     // If we can't find a valid action, throw an error.
-                    destinationOperand = "The action \"" + action.Name + "\" is invalid.";
+                    destinationOperand = "The action \"" + function.FunctionName + "\" is invalid.";
                     status = "Error";
 
                     return;
